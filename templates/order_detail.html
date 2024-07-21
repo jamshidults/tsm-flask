@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4>Order #{{ order.id }} - {{ order.reference }}</h4>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title text-secondary">Order Details</h5>
+            <p class="card-text"><strong>PoS Bill Reference:</strong> <span >{{ order.pos_reference }}</span></p>
+
+            <p class="card-text"><strong>Total:</strong> <span class="badge badge-success">₹{{ order.total }}</span></p>
+            <p class="card-text"><strong>Status:</strong> <span class="badge badge-info">{{ order.status }}</span></p>
+
+            <h5 class="text-secondary mt-4">Order Lines</h5>
+            <div id="orderLines">
+                {% for orderline in order.orderlines %}
+                    <div class="card mb-2">
+                        <div class="card-header" id="heading{{ orderline.id }}">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse{{ orderline.id }}" aria-expanded="true" aria-controls="collapse{{ orderline.id }}">
+                                    Product: {{ orderline.product }} - Quantity: {{ orderline.quantity }} - Subtotal: ₹{{ orderline.subtotal }}
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapse{{ orderline.id }}" class="collapse" aria-labelledby="heading{{ orderline.id }}" data-parent="#orderLines">
+                            <div class="card-body">
+                                <h6 class="text-secondary">Lot Details</h6>
+                                <ul class="list-group">
+                                    {% for lot in orderline.lots %}
+                                        <li class="list-group-item">
+                                            <strong>Lot ID:</strong> {{ lot.lot_id }}<br>
+                                            <strong>Lot Name:</strong> {{ lot.lot_name }}<br>
+                                            <strong>Product:</strong> {{ lot.product }}<br>
+                                            <strong>Quantity:</strong> {{ lot.quantity }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <h5 class="text-secondary mt-4">Payments</h5>
+            <ul class="list-group">
+                {% for payment in order.payments %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>
+                                <strong>Amount:</strong> <span class="badge badge-success">₹{{ payment.amount }}</span><br>
+                                <strong>Date:</strong> {{ payment.payment_date }}<br>
+
+                            </span>
+                            <span class="badge badge-secondary badge-pill">Payment Method: {{ payment.payment_method }}</span>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
